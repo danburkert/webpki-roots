@@ -58,9 +58,7 @@ excluded_cas = [
 
 
 def fetch_bundle():
-    proc = subprocess.Popen(['curl',
-                             'https://mkcert.org/generate/all/except/' +
-                                "+".join([urllib.parse.quote(x) for x in excluded_cas])],
+    proc = subprocess.Popen(['curl', 'https://truststore.pki.rds.amazonaws.com/us-west-2/us-west-2-bundle.pem'],
             stdout = subprocess.PIPE)
     stdout, _ = proc.communicate()
     return stdout.decode('utf-8')
@@ -169,8 +167,8 @@ if __name__ == '__main__':
 
     for cert in split_bundle(bundle):
         our_hash = calc_spki_hash(cert)
-        their_hash = extract_header_spki_hash(cert)
-        assert our_hash == their_hash
+        # their_hash = extract_header_spki_hash(cert)
+        # assert our_hash == their_hash
 
         cert_der = unwrap_pem(cert)
         data = convert_cert(cert_der)
